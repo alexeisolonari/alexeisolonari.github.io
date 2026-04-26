@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Real-time ESP32 FreeRTOS project showcase inspired by Luminar Technologies.">
+  <title>Real-Time Autonomy System | Luminar-Inspired ESP32 Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Real-time autonomy system home">
+        <span class="brand-mark"></span>
+        <span>RT Autonomy</span>
+      </a>
+      <div class="nav-links">
+        <a href="#system">System</a>
+        <a href="#scheduler">Scheduler</a>
+        <a href="#demo">Demo</a>
+      </div>
+    </nav>
+
+    <section class="hero-grid" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">ESP32 · FreeRTOS · Luminar-inspired autonomy</p>
+        <h1>Real-Time Control Stack for a Self-Driving Sensor Demo</h1>
+        <p class="lede">A dual-core ESP32 system demonstrating hard and soft real-time tasks, ISR-driven state changes, semaphore signaling, and a Wi-Fi dashboard for monitoring autonomous driving state.</p>
+        <div class="hero-actions" aria-label="Page shortcuts">
+          <a class="primary-link" href="#demo">Watch demo</a>
+          <a class="secondary-link" href="#scheduler">View task map</a>
+        </div>
+      </div>
+
+      <div class="signal-visual" aria-label="Autonomy signal visualization">
+        <div class="road-lines">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="scan-beam"></div>
+        <div class="vehicle-node">
+          <span></span>
+        </div>
+        <div class="object-points">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section class="overview-section" id="system" aria-labelledby="system-title">
+      <div class="section-label">System Overview</div>
+      <div class="overview-layout">
+        <div>
+          <h2 id="system-title">Autonomy logic with real-time constraints.</h2>
+        </div>
+        <div class="overview-copy">
+          <p>The project models a compact self-driving controller themed around Luminar Technologies. User input changes the maximum requested speed, which increases or decreases the simulated perception workload. A hard real-time brake monitor watches a sliding potentiometer and triggers an emergency LED response when the threshold is crossed.</p>
+          <p>The system can be toggled locally through a physical button interrupt or remotely through a Wi-Fi web server. The web server also reports speed request, emergency brake state, and self-driving state.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics-strip" aria-label="Project highlights">
+      <div>
+        <span>2</span>
+        <p>ESP32 cores</p>
+      </div>
+      <div>
+        <span>FreeRTOS</span>
+        <p>scheduler</p>
+      </div>
+      <div>
+        <span>P3</span>
+        <p>hard brake path</p>
+      </div>
+      <div>
+        <span>Wi-Fi</span>
+        <p>live dashboard</p>
+      </div>
+    </section>
+
+    <section class="scheduler-section" id="scheduler" aria-labelledby="scheduler-title">
+      <div class="section-label">Scheduler Map</div>
+      <div class="scheduler-header">
+        <h2 id="scheduler-title">Task placement across both ESP32 cores.</h2>
+        <p>Core 1 handles control logic, button interrupts, braking, heartbeat, and simulated perception. Core 0 hosts the Wi-Fi web server and dashboard endpoint work.</p>
+      </div>
+
+      <div class="core-grid">
+        <section class="core-column" aria-labelledby="core-one-title">
+          <h3 id="core-one-title">Core 1 · Control</h3>
+          <div class="task-row">
+            <div>
+              <strong>Heartbeat</strong>
+              <span>Priority 1 · soft</span>
+            </div>
+            <p>Power indication through a periodic heartbeat task.</p>
+          </div>
+          <div class="task-row">
+            <div>
+              <strong>Speed Input</strong>
+              <span>Priority 1 · soft</span>
+            </div>
+            <p>Reads a potentiometer to adjust maximum requested speed.</p>
+          </div>
+          <div class="task-row">
+            <div>
+              <strong>Perception Load</strong>
+              <span>Priority 2 · soft</span>
+            </div>
+            <p>Simulates the number of outside objects being processed.</p>
+          </div>
+          <div class="task-row critical">
+            <div>
+              <strong>Brake Monitor</strong>
+              <span>Priority 3 · hard</span>
+            </div>
+            <p>Watches a sliding potentiometer and signals emergency braking.</p>
+          </div>
+          <div class="task-row critical">
+            <div>
+              <strong>Event Handler</strong>
+              <span>Priority 3 · hard</span>
+            </div>
+            <p>Handles toggle events and emergency brake semaphore responses.</p>
+          </div>
+          <div class="task-row">
+            <div>
+              <strong>Button ISR</strong>
+              <span>interrupt</span>
+            </div>
+            <p>Toggles the self-driving system from a physical button.</p>
+          </div>
+        </section>
+
+        <section class="core-column" aria-labelledby="core-zero-title">
+          <h3 id="core-zero-title">Core 0 · Network</h3>
+          <div class="task-row">
+            <div>
+              <strong>Web Server</strong>
+              <span>Dashboard</span>
+            </div>
+            <p>Reports max speed request, emergency brake state, system state, and accepts remote toggle commands.</p>
+          </div>
+          <div class="task-row">
+            <div>
+              <strong>Wi-Fi Networking</strong>
+              <span>network path</span>
+            </div>
+            <p>Hosts the wireless connection used by the ESP32 dashboard.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="flow-section" aria-labelledby="flow-title">
+      <div class="section-label">Runtime Flow</div>
+      <h2 id="flow-title">Inputs become scheduling pressure, state changes, and brake events.</h2>
+      <div class="flow-line" aria-label="Runtime flow">
+        <div>
+          <span>01</span>
+          <p>Speed potentiometer sets the requested maximum speed.</p>
+        </div>
+        <div>
+          <span>02</span>
+          <p>Perception task scales object-processing load with speed.</p>
+        </div>
+        <div>
+          <span>03</span>
+          <p>Brake monitor preempts lower-priority work when needed.</p>
+        </div>
+        <div>
+          <span>04</span>
+          <p>Event handler updates LEDs and state.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section" id="demo" aria-labelledby="demo-title">
+      <div class="section-label">Demo</div>
+      <div class="demo-layout">
+        <div>
+          <h2 id="demo-title">Project video</h2>
+          <p>Watch the final system walkthrough below.</p>
+        </div>
+        <div class="video-shell">
+          <iframe title="Project demo video" src="https://www.youtube-nocookie.com/embed/TeMnycgn4ls?rel=0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <div class="video-placeholder">
+            <span>YouTube embed</span>
+          </div>
+        </div>
+        <a class="video-fallback" href="https://youtu.be/TeMnycgn4ls" target="_blank" rel="noopener">Open video on YouTube</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Real-Time Systems Final Project</p>
+    <p>ESP32 · FreeRTOS · Autonomous Systems</p>
+  </footer>
+</body>
+</html>
